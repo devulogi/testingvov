@@ -82,6 +82,13 @@ function App() {
 
   const doStart = () => {
     if (state.currentState === "inactive") {
+      if (state.saved) {
+        setState(prevState => ({
+          ...prevState,
+          audioClip: null,
+          saved: false,
+        }));
+      }
       return state.mediaRecorderInstance.start();
     }
     return;
@@ -137,21 +144,7 @@ function App() {
         onResume={doResume}
         onDelete={doDelete}
       />
-      <p>current state: {state.currentState}</p>
-      <div>
-        {state.saved && <Button text='delete' onClick={doDelete} />}
-        {state.currentState === "inactive" ? (
-          <Button text='record' onClick={doStart} />
-        ) : (
-          <Button text='pause' onClick={doPause} />
-        )}
-        {state.currentState === "paused" && (
-          <Button text='resume' onClick={doResume} />
-        )}
-        {state.currentState === "recording" && (
-          <Button text='stop' onClick={doStop} />
-        )}
-      </div>
+
       {state.audioClip ? (
         <>
           <p>AudioClip</p>

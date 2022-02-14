@@ -77,33 +77,32 @@ function Timer({
         Remaining time to record: {twoDigits(hoursToDisplay)}:
         {twoDigits(minutesToDisplay)}:{twoDigits(secondsToDisplay)}
       </p>
+      <p>Status: {currentState}</p>
 
-      {currentState === "inactive" ? (
-        <button onClick={handleStart} type='button'>
-          Record
-        </button>
-      ) : (
-        <button onClick={handlePause} type='button'>
-          Pause
-        </button>
-      )}
-      {currentState === "paused" && (
-        <button onClick={handleResume}>Resume</button>
-      )}
-      {currentState === "recording" && (
-        <button onClick={handleStop} type='button'>
-          Stop
-        </button>
-      )}
-      {saved && (
-        <button onClick={handleDelete} type='button'>
-          Delete
-        </button>
-      )}
-
-      <div style={{ padding: 20 }}></div>
-
-      <div>Status: {currentState}</div>
+      <div>
+        {currentState === "inactive" ? (
+          <button onClick={handleStart} type='button'>
+            Record
+          </button>
+        ) : (
+          <button onClick={handlePause} type='button'>
+            Pause
+          </button>
+        )}
+        {currentState === "paused" && (
+          <button onClick={handleResume}>Resume</button>
+        )}
+        {currentState === "recording" && (
+          <button onClick={handleStop} type='button'>
+            Stop
+          </button>
+        )}
+        {saved && (
+          <button onClick={handleDelete} type='button'>
+            Delete
+          </button>
+        )}
+      </div>
     </div>
   );
 }
