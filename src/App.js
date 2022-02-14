@@ -1,4 +1,5 @@
 import React from "react";
+import Select from "react-select";
 
 import Timer from "./components/Timer";
 import Button from "./components/Button";
@@ -11,6 +12,7 @@ const initialState = {
 };
 
 function App() {
+  const [screenTime, setScreenTime] = React.useState(10);
   const [state, setState] = React.useState(initialState);
   let chunks = [];
 
@@ -114,10 +116,27 @@ function App() {
     return;
   };
 
+  const options = [
+    { value: 10, label: "10" },
+    { value: 15, label: "15" },
+    { value: 20, label: "20" },
+  ];
+
   return (
     <div>
-      <p>Remaining time to record:</p>
-      <Timer screenTime={10} />
+      <p>Screen time</p>
+      <Select options={options} onChange={e => setScreenTime(e.value)} />
+
+      <Timer
+        saved={state.saved}
+        currentState={state.currentState}
+        screenTime={screenTime}
+        onStart={doStart}
+        onStop={doStop}
+        onPause={doPause}
+        onResume={doResume}
+        onDelete={doDelete}
+      />
       <p>current state: {state.currentState}</p>
       <div>
         {state.saved && <Button text='delete' onClick={doDelete} />}
@@ -135,7 +154,8 @@ function App() {
       </div>
       {state.audioClip ? (
         <>
-          <audio src={state.audioClip}></audio>
+          <p>AudioClip</p>
+          <audio controls src={state.audioClip}></audio>
         </>
       ) : null}
     </div>

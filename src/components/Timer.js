@@ -1,60 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const STATUS = {
-  STARTED: "Started",
-  STOPPED: "Stopped",
-};
-
-export default function Timer({ screenTime }) {
-  const [secondsRemaining, setSecondsRemaining] = useState(screenTime);
-  const [status, setStatus] = useState(STATUS.STOPPED);
-
-  const secondsToDisplay = secondsRemaining % 60;
-  const minutesRemaining = (secondsRemaining - secondsToDisplay) / 60;
-  const minutesToDisplay = minutesRemaining % 60;
-  const hoursToDisplay = (minutesRemaining - minutesToDisplay) / 60;
-
-  const handleStart = () => {
-    setStatus(STATUS.STARTED);
-  };
-  const handleStop = () => {
-    setStatus(STATUS.STOPPED);
-  };
-  const handleReset = () => {
-    setStatus(STATUS.STOPPED);
-    setSecondsRemaining(screenTime);
-  };
-  useInterval(
-    () => {
-      if (secondsRemaining > 0) {
-        setSecondsRemaining(secondsRemaining - 1);
-      } else {
-        setStatus(STATUS.STOPPED);
-      }
-    },
-    status === STATUS.STARTED ? 1000 : null
-    // passing null stops the interval
-  );
-  return (
-    <div className='App'>
-      <button onClick={handleStart} type='button'>
-        Start
-      </button>
-      <button onClick={handleStop} type='button'>
-        Stop
-      </button>
-      <button onClick={handleReset} type='button'>
-        Reset
-      </button>
-      <div style={{ padding: 20 }}>
-        {twoDigits(hoursToDisplay)}:{twoDigits(minutesToDisplay)}:
-        {twoDigits(secondsToDisplay)}
-      </div>
-      <div>Status: {status}</div>
-    </div>
-  );
-}
-
 function useInterval(callback, delay) {
   const savedCallback = useRef();
 
@@ -75,4 +20,92 @@ function useInterval(callback, delay) {
   }, [delay]);
 }
 
-const twoDigits = num => String(num).padStart(2, "0");
+function Timer({
+  saved,
+  currentState,
+  screenTime,
+  onStart,
+  onStop,
+  onPause,
+  onResume,
+  onDelete,
+}) {
+  const [secondsRemaining, setSecondsRemaining] = useState(screenTime);
+
+  const secondsToDisplay = secondsRemaining % 60;
+  const minutesRemaining = (secondsRemaining - secondsToDisplay) / 60;
+  const minutesToDisplay = minutesRemaining % 60;
+  const hoursToDisplay = (minutesRemaining - minutesToDisplay) / 60;
+
+  React.useEffect(() => {
+    handleStop(screenTime);
+  }, [screenTime]);
+
+  const twoDigits = num => String(num).padStart(2, "0");
+
+  const handleStart = () => {
+    onStart();
+  };
+  const handlePause = () => {
+    onPause();
+  };
+  const handleResume = () => {
+    onResume();
+  };
+  const handleStop = () => {
+    onStop();
+    setSecondsRemaining(screenTime);
+  };
+  const handleDelete = () => {
+    onDelete();
+  };
+
+  useInterval(
+    () => {
+      if (secondsRemaining > 0) {
+        setSecondsRemaining(secondsRemaining - 1);
+      } else {
+        handleStop();
+      }
+    },
+    currentState === "recording" ? 1000 : null
+    // passing null stops the interval
+  );
+  return (
+    <div>
+      <p>
+        Remaining time to record: {twoDigits(hoursToDisplay)}:
+        {twoDigits(minutesToDisplay)}:{twoDigits(secondsToDisplay)}
+      </p>
+
+      {currentState === "inactive" ? (
+        <button onClick={handleStart} type='button'>
+          Record
+        </button>
+      ) : (
+        <button onClick={handlePause} type='button'>
+          Pause
+        </button>
+      )}
+      {currentState === "paused" && (
+        <button onClick={handleResume}>Resume</button>
+      )}
+      {currentState === "recording" && (
+        <button onClick={handleStop} type='button'>
+          Stop
+        </button>
+      )}
+      {saved && (
+        <button onClick={handleDelete} type='button'>
+          Delete
+        </button>
+      )}
+
+      <div style={{ padding: 20 }}></div>
+
+      <div>Status: {currentState}</div>
+    </div>
+  );
+}
+
+export default Timer;
