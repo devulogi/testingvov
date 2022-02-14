@@ -1,5 +1,6 @@
 import React from "react";
 
+import Timer from "./components/Timer";
 import Button from "./components/Button";
 
 const initialState = {
@@ -115,13 +116,22 @@ function App() {
 
   return (
     <div>
+      <p>Remaining time to record:</p>
+      <Timer screenTime={10} />
       <p>current state: {state.currentState}</p>
       <div>
-        <Button text='delete' onClick={doDelete} />
-        <Button text='record' onClick={doStart} />
-        <Button text='pause' onClick={doPause} />
-        <Button text='resume' onClick={doResume} />
-        <Button text='stop' onClick={doStop} />
+        {state.saved && <Button text='delete' onClick={doDelete} />}
+        {state.currentState === "inactive" ? (
+          <Button text='record' onClick={doStart} />
+        ) : (
+          <Button text='pause' onClick={doPause} />
+        )}
+        {state.currentState === "paused" && (
+          <Button text='resume' onClick={doResume} />
+        )}
+        {state.currentState === "recording" && (
+          <Button text='stop' onClick={doStop} />
+        )}
       </div>
       {state.audioClip ? (
         <>
