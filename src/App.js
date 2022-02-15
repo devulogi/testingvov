@@ -2,7 +2,6 @@ import React from "react";
 import Select from "react-select";
 
 import Timer from "./components/Timer";
-import Button from "./components/Button";
 
 const initialState = {
   mediaRecorderInstance: null,
@@ -147,7 +146,6 @@ function App() {
 
       {state.audioClip ? (
         <>
-          <p>AudioClip</p>
           <audio controls src={state.audioClip}></audio>
         </>
       ) : null}
